@@ -1,0 +1,119 @@
+categories:
+- Deployment
+labels:
+  io.cattle.role: cluster # options are cluster/project
+questions:
+- variable: sync.state
+  description: "use `.sync.state: secret` to store flux's state as an annotation on the secret (instead of a git tag)"
+  default: "git"
+  type: enum
+  options:
+    - git
+    - secret
+  group: Sync
+  label: Sync state
+- variable: sync.timeout
+  description: "Duration after which sync operations time out (defaults to 1m)"
+  default: "1m"
+  type: string
+  group: Sync
+  label: Sync Timeout
+- variable: git.url
+  description: "URL of git repo with Kubernetes manifests; e.g. ssh://git@github.com/fluxcd/flux-get-started"
+  type: string
+  required: true
+  group: Git
+  label: Repo URL
+- variable: git.branch
+  default: master
+  description: "Branch of git repo to use for Kubernetes manifests"
+  type: string
+  required: true
+  group: Git
+  label: Sync Branch
+- variable: git.path
+  description: "Path within git repo to locate Kubernetes manifests (relative path)"
+  type: string
+  group: Git
+  label: Repo Path
+- variable: git.readonly
+  default: false
+  description: "Set to `true` if you intend for Flux to not be able to push changes to git. If True, set sync.state to `secret`"
+  type: boolean
+  group: Git
+  label: Readonly
+- variable: git.user
+  default: "Flux"
+  description: "Username to use as git committer"
+  type: string
+  group: Git
+  label: Git User
+- variable: git.email
+  default: ""
+  description: "Email to use as git committer"
+  type: string
+  group: Git
+  label: "Git User Email"
+- variable: git.setAuthor
+  default: true
+  description: "If set, the author of git commits will reflect the user who initiated the commit and will differ from the git committer."
+  type: boolean
+  group: Git
+  label: Set Git Author
+- variable: git.label
+  default: "flux-sync-state"
+  description: "Label to keep track of sync progress"
+  type: string
+  group: Git
+  label: Sync Label
+- variable: git.secretName
+  default: "flux-deploy-key"
+  description: "The secret name can be used to supply your own SSH key"
+  type: string
+  group: Git
+  label: Secret Name
+- variable: ssh.known_hosts
+  default: |
+    # scm.starbucks.com:22 SSH-2.0-babeld-474b9784
+    scm.starbucks.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDHvP6sJgqDn0ZTsFDZCf5f7km2QowG4fggzc/LyVCOKq+LJl5TFhouUmYISipzNJdxqFSiIvXl4ju7C/6K5BsFZQs/rMipfFMiXbd1fIiSLP7N0zMEFjtC3COJ4S4Y17iOjqcYlZs8btq3qviQ8So305/NuRTkRQdjQsnKKU7wyq/2SsHhiFhZASRqnxsvd3q5CrnoPK8UDqRLAXKqzAiton4taACZZKgdbWyb3XX+zXfjwdMHrD5cgfJ3QjQR6Al3qCYFcocRn2NfmnpA8XDG7f5CCB7/piwpIfJyD3xrmc17bpUo4eI31xd7X7fj4DJSvi/RrTe9eDPfWWExyBO3
+    # scm.starbucks.com:22 SSH-2.0-babeld-474b9784
+    scm.starbucks.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBC/6V/DD+0Z0b907lAjln75IglrRhYHy2/hyzRd655qiCBP7fSKFayzOO11hmwzpsHdIYWuq+agfvPD3D0TZI+c=
+    # scm.starbucks.com:22 SSH-2.0-babeld-474b9784
+  description: "Overrides for git over SSH. If you use your own git server, you will likely need to provide a host key for it in this field."
+  type: multiline
+  group: Git
+  label: SSH Known Hosts
+- variable: syncGarbageCollection.enabled
+  default: true
+  description: "If enabled, removing tracked resources from Git will remove them from a cluster."
+  type: boolean
+  group: Sync
+  label: Garbage Collection
+- variable: prometheus.enabled
+  default: true
+  description: "If enabled, adds prometheus annotations to Flux and helmOperator pod(s)"
+  type: boolean
+  group: Monitoring
+  label: Enable Prometheus
+- variable: prometheus.serviceMonitor.create
+  default: false
+  description: "Set to true if using the Prometheus Operator"
+  type: boolean
+  group: Monitoring
+  label: Create Service Monitor
+- variable: prometheus.serviceMonitor.interval
+  description: "Interval at which metrics should be scraped"
+  type: string
+  group: Monitoring
+  label: Scrape Interval
+- variable: prometheus.serviceMonitor.namespace
+  description: "The namespace where the ServiceMonitor is deployed"
+  type: string
+  group: Monitoring
+  label: Prometheus Operator Namespace
+- variable: manifestGeneration
+  default: true
+  description: "If enabled, fluxd will look for `.flux.yaml` and run Kustomize or other manifest generators"
+  type: boolean
+  group: Sync
+  label: Enable Manifest Generation
