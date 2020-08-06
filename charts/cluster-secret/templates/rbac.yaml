@@ -1,0 +1,81 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ include "cluster-secret.name" . }}-role-cluster
+rules:
+
+  # Framework: knowing which other operators are running (i.e. peering).
+  - apiGroups: [clustersecret.io]
+    resources: [clusterkopfpeerings]
+    verbs: [list, watch, patch, get]
+  - apiGroups: [clustersecret.io]
+    resources: [customresourcedefinitions]
+    verbs: [list, get]
+
+  # Application: read-only access for watching cluster-wide.
+  - apiGroups: [clustersecret.io]
+    resources: [clustersecrets]
+    verbs: [list, watch]
+    
+  # Watch naespaces 
+  - apiGroups: [""]
+    resources: [namespaces]
+    verbs: [watch, list, get]
+    
+  # Handle secrets 
+  - apiGroups: [""]
+    resources: [secrets]
+    verbs: [watch, list, get, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  namespace: {{ include "cluster-secret.namespace" . }}
+  name: {{ include "cluster-secret.name" . }}-role-namespaced
+rules:
+
+  # Framework: knowing which other operators are running (i.e. peering).
+  - apiGroups: [clustersecret.io]
+    resources: [kopfpeerings]
+    verbs: [list, watch, patch, get]
+
+  # Framework: posting the events about the handlers progress/errors.
+  - apiGroups: [events.k8s.io]
+    resources: [events]
+    verbs: [create]
+  - apiGroups: [""]
+    resources: [events]
+    verbs: [create]
+
+  # Application: other resources it produces and manipulates.
+  # Here, we create secrets, but we do not delete them ever.
+  - apiGroups: [""]
+    resources: [secrets]
+    verbs: [create,update,patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: clustersecret-rolebinding-cluster
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: clustersecret-role-cluster
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "cluster-secret.serviceAccountName" . }}
+    namespace: {{ include "cluster-secret.namespace" . }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  namespace: {{ include "cluster-secret.namespace" . }}
+  name: {{ include "cluster-secret.name" . }}-rolebinding-namespaced
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "cluster-secret.name" . }}-role-namespaced
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "cluster-secret.serviceAccountName" . }}
