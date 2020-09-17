@@ -72,3 +72,31 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Cluster Role Name
+*/}}
+{{- define "cluster-secret.cluster-role" -}}
+{{ include "cluster-secret.serviceAccountName" . }}-cluster-role
+{{- end }}
+
+{{/*
+Cluster Role Binding Name
+*/}}
+{{- define "cluster-secret.cluster-role-binding" -}}
+{{ include "cluster-secret.serviceAccountName" . }}-cluster-role-binding
+{{- end }}
+
+{{/*
+Namespaced Role Name
+*/}}
+{{- define "cluster-secret.namespaced-role" -}}
+{{ include "cluster-secret.serviceAccountName" . }}-namespaced-role
+{{- end }}
+
+{{/*
+Namespaced Role Binding Name
+*/}}
+{{- define "cluster-secret.namespaced-role-binding" -}}
+{{ include "cluster-secret.serviceAccountName" . }}-namespaced-role-binding
+{{- end }}

@@ -3,6 +3,8 @@
 replicaCount: 1
 
 image:
+  # https://github.com/datasci-osu/ClusterSecret/branches
+  # https://github.com/zakkg3/ClusterSecret
   repository: flag5/clustersecret
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
