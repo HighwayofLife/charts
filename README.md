@@ -1,2 +1,2 @@
-Rancher2 Charts
-===============
+Helm Charts
+===========
