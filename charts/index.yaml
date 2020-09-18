@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  cluster-secret:
+  - apiVersion: v2
+    appVersion: 0.0.5
+    created: "2020-09-17T22:53:44.706076-07:00"
+    description: A Helm chart creating cluster-wide secrets
+    digest: 953020b3682fd39167a966297466b2b6559b18470cc31781de3684b4144b5cf6
+    name: cluster-secret
+    type: application
+    urls:
+    - https://github.com/HighwayofLife/charts/releases/download/cluster-secret-0.1.6/cluster-secret-0.1.6.tgz
+    version: 0.1.6
+generated: "2020-09-17T22:53:44.419624-07:00"
